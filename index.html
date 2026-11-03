@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#806333">
-<meta name="description" content="Rekap persentase stock kayu IBS berdasarkan panjang kayu dan posisi.">
 <title>PROSENTASE STOCK IBS BERDASARKAN PANJANG KAYU</title>
 
 <style>
@@ -16,8 +15,7 @@
   --gold: #806333;
   --gold-light: #eee5d3;
   --border: #e3dccf;
-  --green: #426451;
-  --shadow: 0 8px 28px rgba(64, 49, 24, .045);
+  --shadow: 0 8px 28px rgba(64,49,24,.045);
 }
 
 * { box-sizing: border-box; }
@@ -31,18 +29,13 @@ body {
 }
 
 button, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .6; cursor: wait; }
 
-button, select, a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:focus-visible, select:focus-visible, a:focus-visible {
+button:focus-visible, select:focus-visible {
   outline: 3px solid #b79a62;
   outline-offset: 3px;
 }
-
-button { cursor: pointer; }
-button:disabled { opacity: .6; cursor: wait; }
 
 .wrap {
   max-width: 1180px;
@@ -100,7 +93,7 @@ header {
 h1 {
   max-width: 820px;
   margin: 0;
-  font-size: clamp(20px, 3vw, 30px);
+  font-size: clamp(20px,3vw,30px);
   line-height: 1.3;
   letter-spacing: -.5px;
 }
@@ -111,7 +104,10 @@ h1 {
   font-size: 13px;
 }
 
-main { padding-top: 26px !important; padding-bottom: 34px !important; }
+main {
+  padding-top: 26px !important;
+  padding-bottom: 34px !important;
+}
 
 .toolbar {
   display: flex;
@@ -172,27 +168,18 @@ select {
 
 .btn-primary:hover { background: #6c522a; }
 
-.btn svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 .status {
   font-size: 12px;
   color: var(--muted);
   margin: 0 0 18px;
+  overflow-wrap: anywhere;
 }
 
 .status.error { color: #a33d2d; }
 
 .metrics {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4,minmax(0,1fr));
   gap: 14px;
   margin-bottom: 23px;
 }
@@ -212,10 +199,11 @@ select {
 
 .metric-value {
   margin-top: 7px;
-  font-size: clamp(23px, 3vw, 31px);
+  font-size: clamp(23px,3vw,31px);
   font-weight: 700;
   letter-spacing: -.6px;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 .metric-value small {
@@ -242,12 +230,13 @@ h2 { margin: 0; font-size: 17px; }
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2,minmax(0,1fr));
   gap: 20px;
   align-items: start;
 }
 
 .card {
+  min-width: 0;
   background: var(--paper);
   border: 1px solid var(--border);
   border-radius: 15px;
@@ -258,7 +247,7 @@ h2 { margin: 0; font-size: 17px; }
 .card-header {
   padding: 19px 20px;
   border-bottom: 1px solid var(--border);
-  background: linear-gradient(110deg, #f5eedf, var(--paper));
+  background: linear-gradient(110deg,#f5eedf,var(--paper));
 }
 
 .card-title-line {
@@ -272,6 +261,7 @@ h2 { margin: 0; font-size: 17px; }
   margin: 0;
   font-size: 15px;
   letter-spacing: .3px;
+  overflow-wrap: anywhere;
 }
 
 .badge {
@@ -302,6 +292,7 @@ th, td {
   text-align: right;
   border-bottom: 1px solid #eee8dd;
   vertical-align: middle;
+  overflow-wrap: anywhere;
 }
 
 th {
@@ -322,11 +313,7 @@ tbody tr:nth-child(even) { background: #fdfaf4; }
 tbody tr:hover { background: #f4eddf; }
 
 .length { font-weight: 700; }
-
-.percent {
-  font-weight: 700;
-  color: var(--gold);
-}
+.percent { font-weight: 700; color: var(--gold); }
 
 .track {
   height: 5px;
@@ -394,19 +381,36 @@ footer {
 @media (max-width: 720px) {
   .wrap { padding-left: 15px; padding-right: 15px; }
   .brand { gap: 13px; padding-top: 22px; padding-bottom: 22px; }
-  .logo-box { flex-basis: 65px; width: 65px; height: 65px; border-radius: 13px; }
+  .logo-box {
+    flex-basis: 65px;
+    width: 65px;
+    height: 65px;
+    border-radius: 13px;
+  }
   .eyebrow { font-size: 9px; letter-spacing: 1.4px; }
   h1 { font-size: 19px; }
   .subtitle { font-size: 11px; }
-  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .metrics {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 10px;
+  }
   .metric { padding: 14px; }
   .metric-value { font-size: 25px; }
   .cards { grid-template-columns: 1fr; gap: 16px; }
   .toolbar, .filters, .actions { width: 100%; }
   .filters .field { flex: 1; min-width: 0; }
   select { width: 100%; font-size: 12px; padding-left: 9px; }
-  .actions .btn { flex: 1; }
-  .section-heading { align-items: start; flex-direction: column; gap: 4px; }
+  .actions { gap: 7px; }
+  .actions .btn {
+    flex: 1 1 90px;
+    padding: 10px 8px;
+    font-size: 11px;
+  }
+  .section-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 4px;
+  }
   .card-header { padding: 16px; }
 }
 
@@ -424,7 +428,11 @@ footer {
   .wrap { max-width: none; padding: 0; }
   header { border-top: 0; }
   .cards { display: block; }
-  .card { margin-bottom: 18px; break-inside: avoid; box-shadow: none; }
+  .card {
+    margin-bottom: 18px;
+    break-inside: avoid;
+    box-shadow: none;
+  }
   .metric { box-shadow: none; }
 }
 </style>
@@ -462,24 +470,21 @@ footer {
         <label for="basis">DASAR PERSENTASE</label>
         <select id="basis">
           <option value="batang">Jumlah Batang</option>
-          <option value="volume">Volume Kayu</option>
+          <option value="volume" selected>Volume Kayu</option>
         </select>
       </div>
     </div>
 
     <div class="actions">
       <button id="refresh" class="btn" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20 7v5h-5M4 17v-5h5"/>
-          <path d="M6 7a7 7 0 0 1 12-1l2 3M4 15l2 3a7 7 0 0 0 12-1"/>
-        </svg>
         Perbarui Data
       </button>
 
+      <button id="downloadPDF" class="btn" type="button" disabled>
+        Download PDF
+      </button>
+
       <button id="download" class="btn btn-primary" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/>
-        </svg>
         Download Loglist
       </button>
     </div>
@@ -492,12 +497,16 @@ footer {
   <div class="metrics">
     <div class="metric">
       <div class="metric-label">Total Batang</div>
-      <div class="metric-value"><span id="totalBatang">—</span> <small>btg</small></div>
+      <div class="metric-value">
+        <span id="totalBatang">—</span> <small>btg</small>
+      </div>
     </div>
 
     <div class="metric">
       <div class="metric-label">Total Volume</div>
-      <div class="metric-value"><span id="totalVolume">—</span> <small>m³</small></div>
+      <div class="metric-value">
+        <span id="totalVolume">—</span> <small>m³</small>
+      </div>
     </div>
 
     <div class="metric">
@@ -507,14 +516,16 @@ footer {
 
     <div class="metric">
       <div class="metric-label">Variasi Panjang</div>
-      <div class="metric-value"><span id="totalPanjang">—</span> <small>kelompok</small></div>
+      <div class="metric-value">
+        <span id="totalPanjang">—</span> <small>kelompok</small>
+      </div>
     </div>
   </div>
 
   <div class="section-heading">
     <h2>Rekap Panjang per Posisi</h2>
     <span id="basisNote" class="basis-note">
-      Persentase terhadap total batang setiap posisi
+      Persentase terhadap total volume setiap posisi
     </span>
   </div>
 
@@ -530,26 +541,31 @@ footer {
     </p>
     <p>
       Persentase dihitung pada masing-masing posisi.
-      Total ringkasan mengikuti filter posisi yang dipilih.
-      Pembulatan dapat menyebabkan jumlah persentase sedikit berbeda dari 100%.
+      Total ringkasan dan PDF mengikuti filter posisi.
+      Pembulatan dapat menyebabkan jumlah persentase
+      sedikit berbeda dari 100%.
     </p>
     <p>
       Batang dengan volume kosong tetap dihitung dalam jumlah batang.
       Persentase volume memakai volume yang sudah terisi.
+      Download Loglist mengambil seluruh data loglist.
     </p>
   </div>
 
   <noscript>
-    <p>Aktifkan JavaScript agar data stock dan tombol download dapat digunakan.</p>
+    <p>Aktifkan JavaScript agar data dan tombol download dapat digunakan.</p>
   </noscript>
 </main>
 
-<footer>
-  IBS · Monitoring Stock Kayu
-</footer>
+<footer>IBS · Monitoring Stock Kayu</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
 
 <script>
 "use strict";
+
+// ================= SUMBER DATA =================
 
 const CSV_URL =
   "https://raw.githubusercontent.com/duniandis/data_apk/refs/heads/main/prosent_ibs.csv";
@@ -557,7 +573,10 @@ const CSV_URL =
 const LOGLIST_URL =
   "https://raw.githubusercontent.com/duniandis/data_apk/refs/heads/main/loglist_ibs_prosent.csv";
 
+// ================= HELPER =================
+
 const $ = id => document.getElementById(id);
+
 const number = (value, digits = 0) =>
   new Intl.NumberFormat("id-ID", {
     minimumFractionDigits: digits,
@@ -575,20 +594,79 @@ const escapeHTML = value => String(value).replace(
   })[character]
 );
 
-let stock = [];
+const sum = (rows, key) =>
+  rows.reduce((total, row) => total + row[key], 0);
 
-$("logo").addEventListener("error", () => {
-  $("logo").hidden = true;
-  $("logoFallback").hidden = false;
-});
+let stock = [];
 
 function setStatus(message, error = false) {
   $("status").textContent = message;
   $("status").classList.toggle("error", error);
 }
 
-// Mendukung BOM, CRLF, koma di dalam kutipan,
-// kutipan ganda, dan baris baru di dalam sel.
+function timestamp() {
+  const date = new Date();
+  const pad = value => String(value).padStart(2, "0");
+
+  return (
+    date.getFullYear() +
+    pad(date.getMonth() + 1) +
+    pad(date.getDate()) + "_" +
+    pad(date.getHours()) +
+    pad(date.getMinutes()) +
+    pad(date.getSeconds())
+  );
+}
+
+function jakartaTime() {
+  return new Intl.DateTimeFormat("id-ID", {
+    dateStyle: "medium",
+    timeStyle: "medium",
+    timeZone: "Asia/Jakarta"
+  }).format(new Date()) + " WIB";
+}
+
+function positionSort(a, b) {
+  if (a === b) return 0;
+  if (a.toUpperCase() === "BLOK") return -1;
+  if (b.toUpperCase() === "BLOK") return 1;
+  return a.localeCompare(b, "id", { numeric: true });
+}
+
+function filteredStock() {
+  const selected = $("position").value;
+  return stock.filter(row => !selected || row.posisi === selected);
+}
+
+function groupStock(rows) {
+  const groups = new Map();
+
+  for (const row of rows) {
+    if (!groups.has(row.posisi)) groups.set(row.posisi, []);
+    groups.get(row.posisi).push(row);
+  }
+
+  return [...groups.entries()]
+    .sort((a, b) => positionSort(a[0], b[0]))
+    .map(([position, items]) => [
+      position,
+      [...items].sort((a, b) => a.panjang - b.panjang)
+    ]);
+}
+
+function logoFallback() {
+  $("logo").hidden = true;
+  $("logoFallback").hidden = false;
+}
+
+$("logo").addEventListener("error", logoFallback);
+
+if ($("logo").complete && !$("logo").naturalWidth) {
+  logoFallback();
+}
+
+// ================= PEMBACA CSV =================
+
 function parseCSV(text) {
   text = text.replace(/^\uFEFF/, "");
 
@@ -614,8 +692,13 @@ function parseCSV(text) {
       (character === "\n" || character === "\r") && !quoted
     ) {
       if (character === "\r" && text[i + 1] === "\n") i++;
+
       row.push(cell);
-      if (row.some(value => value.trim() !== "")) rows.push(row);
+
+      if (row.some(value => value.trim() !== "")) {
+        rows.push(row);
+      }
+
       row = [];
       cell = "";
     } else {
@@ -623,16 +706,22 @@ function parseCSV(text) {
     }
   }
 
-  if (quoted) throw new Error("Format kutipan CSV tidak lengkap.");
+  if (quoted) {
+    throw new Error("Format kutipan CSV tidak lengkap.");
+  }
 
   row.push(cell);
-  if (row.some(value => value.trim() !== "")) rows.push(row);
+
+  if (row.some(value => value.trim() !== "")) {
+    rows.push(row);
+  }
 
   return rows;
 }
 
 function readStock(text) {
   const rows = parseCSV(text);
+
   if (!rows.length) throw new Error("CSV kosong.");
 
   const headers = rows.shift().map(value =>
@@ -661,6 +750,7 @@ function readStock(text) {
 
     function numeric(name, allowBlank = false) {
       const raw = field(name);
+
       if (!raw && !allowBlank) {
         throw new Error(
           `Baris ${index + 2}: kolom ${name} kosong.`
@@ -674,10 +764,12 @@ function readStock(text) {
           `Baris ${index + 2}: kolom ${name} tidak valid.`
         );
       }
+
       return value;
     }
 
     const posisi = field("posisi");
+
     if (!posisi) {
       throw new Error(`Baris ${index + 2}: posisi kosong.`);
     }
@@ -696,13 +788,18 @@ function readStock(text) {
       !Number.isInteger(result.kosong) ||
       result.kosong > result.batang
     ) {
-      throw new Error(`Baris ${index + 2}: nilai rekap tidak valid.`);
+      throw new Error(
+        `Baris ${index + 2}: nilai rekap tidak valid.`
+      );
     }
 
     return result;
   });
 
-  if (!records.length) throw new Error("Belum ada baris rekap stock.");
+  if (!records.length) {
+    throw new Error("Belum ada baris rekap stock.");
+  }
+
   return records;
 }
 
@@ -713,11 +810,16 @@ async function fetchText(url) {
   try {
     const response = await fetch(
       url + (url.includes("?") ? "&" : "?") + "t=" + Date.now(),
-      { cache: "no-store", signal: controller.signal }
+      {
+        cache: "no-store",
+        signal: controller.signal
+      }
     );
 
     if (!response.ok) {
-      throw new Error("Server mengembalikan HTTP " + response.status);
+      throw new Error(
+        "Server mengembalikan HTTP " + response.status
+      );
     }
 
     return await response.text();
@@ -726,34 +828,16 @@ async function fetchText(url) {
   }
 }
 
-function positionSort(a, b) {
-  if (a === b) return 0;
-  if (a.toUpperCase() === "BLOK") return -1;
-  if (b.toUpperCase() === "BLOK") return 1;
-  return a.localeCompare(b, "id", { numeric: true });
-}
+// ================= TAMPILAN =================
 
 function render() {
-  const selected = $("position").value;
   const byVolume = $("basis").value === "volume";
-
-  const filtered = stock.filter(row =>
-    !selected || row.posisi === selected
-  );
-
-  const groups = new Map();
-
-  for (const row of filtered) {
-    if (!groups.has(row.posisi)) groups.set(row.posisi, []);
-    groups.get(row.posisi).push(row);
-  }
-
-  const sum = (rows, key) =>
-    rows.reduce((total, row) => total + row[key], 0);
+  const filtered = filteredStock();
+  const groups = groupStock(filtered);
 
   $("totalBatang").textContent = number(sum(filtered, "batang"));
   $("totalVolume").textContent = number(sum(filtered, "volume"), 4);
-  $("totalPosisi").textContent = number(groups.size);
+  $("totalPosisi").textContent = number(groups.length);
   $("totalPanjang").textContent = number(
     new Set(filtered.map(row => row.panjang)).size
   );
@@ -763,93 +847,96 @@ function render() {
     (byVolume ? "volume" : "batang") +
     " setiap posisi";
 
+  $("downloadPDF").disabled = !filtered.length;
+
   if (!filtered.length) {
     $("cards").innerHTML =
       '<div class="empty">Tidak ada data pada posisi ini.</div>';
     return;
   }
 
-  $("cards").innerHTML = [...groups.entries()]
-    .sort((a, b) => positionSort(a[0], b[0]))
-    .map(([position, rows]) => {
-      rows.sort((a, b) => a.panjang - b.panjang);
+  $("cards").innerHTML = groups.map(([position, rows]) => {
+    const totalBatang = sum(rows, "batang");
+    const totalVolume = sum(rows, "volume");
+    const missingVolume = sum(rows, "kosong");
+    const denominator = byVolume ? totalVolume : totalBatang;
 
-      const totalBatang = sum(rows, "batang");
-      const totalVolume = sum(rows, "volume");
-      const missingVolume = sum(rows, "kosong");
-      const denominator = byVolume ? totalVolume : totalBatang;
+    const body = rows.map(row => {
+      const numerator = byVolume ? row.volume : row.batang;
 
-      const body = rows.map(row => {
-        const numerator = byVolume ? row.volume : row.batang;
-        const percent = denominator > 0
-          ? numerator / denominator * 100
-          : null;
+      const percent = denominator > 0
+        ? numerator / denominator * 100
+        : null;
 
-        const width = percent === null
-          ? 0
-          : Math.max(0, Math.min(100, percent));
-
-        return `
-          <tr>
-            <td class="length">${escapeHTML(row.panjang + "M")}</td>
-            <td>${number(row.batang)}</td>
-            <td>${number(row.volume, 4)}</td>
-            <td>
-              <span class="percent">${
-                percent === null ? "—" : number(percent, 2) + "%"
-              }</span>
-              <div class="track" aria-hidden="true">
-                <div class="fill" style="width:${width}%"></div>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join("");
-
-      const warning = missingVolume
-        ? `<p class="card-warning">
-            ${number(missingVolume)} batang belum memiliki volume.
-            Persentase volume berdasarkan volume yang terisi.
-          </p>`
-        : "";
+      const width = percent === null
+        ? 0
+        : Math.max(0, Math.min(100, percent));
 
       return `
-        <section class="card">
-          <div class="card-header">
-            <div class="card-title-line">
-              <h3>${escapeHTML(position)}</h3>
-              <span class="badge">${rows.length} kelompok</span>
+        <tr>
+          <td class="length">
+            ${escapeHTML(row.panjang + "M")}
+          </td>
+          <td>${number(row.batang)}</td>
+          <td>${number(row.volume, 4)}</td>
+          <td>
+            <span class="percent">
+              ${percent === null ? "—" : number(percent, 2) + "%"}
+            </span>
+            <div class="track" aria-hidden="true">
+              <div class="fill" style="width:${width}%"></div>
             </div>
-            <p class="card-summary">
-              ${number(totalBatang)} batang ·
-              ${number(totalVolume, 4)} m³
-            </p>
-          </div>
-
-          <table aria-label="Rekap panjang ${escapeHTML(position)}">
-            <thead>
-              <tr>
-                <th scope="col">Panjang</th>
-                <th scope="col">Batang</th>
-                <th scope="col">Volume m³</th>
-                <th scope="col">% ${byVolume ? "Volume" : "Batang"}</th>
-              </tr>
-            </thead>
-            <tbody>${body}</tbody>
-            <tfoot>
-              <tr>
-                <td>Total</td>
-                <td>${number(totalBatang)}</td>
-                <td>${number(totalVolume, 4)}</td>
-                <td>${denominator > 0 ? "100,00%" : "—"}</td>
-              </tr>
-            </tfoot>
-          </table>
-
-          ${warning}
-        </section>
+          </td>
+        </tr>
       `;
     }).join("");
+
+    const warning = missingVolume
+      ? `<p class="card-warning">
+          ${number(missingVolume)} batang belum memiliki volume.
+          Persentase volume berdasarkan volume yang terisi.
+        </p>`
+      : "";
+
+    return `
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-line">
+            <h3>${escapeHTML(position)}</h3>
+            <span class="badge">${rows.length} kelompok</span>
+          </div>
+          <p class="card-summary">
+            ${number(totalBatang)} batang ·
+            ${number(totalVolume, 4)} m³
+          </p>
+        </div>
+
+        <table aria-label="Rekap panjang ${escapeHTML(position)}">
+          <thead>
+            <tr>
+              <th scope="col">Panjang</th>
+              <th scope="col">Batang</th>
+              <th scope="col">Volume m³</th>
+              <th scope="col">
+                % ${byVolume ? "Volume" : "Batang"}
+              </th>
+            </tr>
+          </thead>
+          <tbody>${body}</tbody>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td>${number(totalBatang)}</td>
+              <td>${number(totalVolume, 4)}</td>
+              <td>${denominator > 0 ? "100,00%" : "—"}</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        ${warning}
+      </section>
+    `;
+  }).join("");
 }
 
 async function loadStock() {
@@ -878,13 +965,7 @@ async function loadStock() {
     $("position").disabled = false;
     render();
 
-    const loadedAt = new Intl.DateTimeFormat("id-ID", {
-      dateStyle: "medium",
-      timeStyle: "medium",
-      timeZone: "Asia/Jakarta"
-    }).format(new Date());
-
-    setStatus("Data berhasil dimuat · " + loadedAt + " WIB");
+    setStatus("Data berhasil dimuat · " + jakartaTime());
   } catch (error) {
     const reason = error.name === "AbortError"
       ? "Koneksi melewati batas waktu. Coba kembali."
@@ -894,14 +975,17 @@ async function loadStock() {
       $("cards").innerHTML = `
         <div class="empty">
           Data belum dapat dimuat.<br>
-          Tekan <strong>Perbarui Data</strong> untuk mencoba lagi.
+          Tekan <strong>Perbarui Data</strong>
+          untuk mencoba lagi.
         </div>
       `;
     }
 
     setStatus(
       "Gagal memperbarui data. " + reason +
-      (stock.length ? " Tampilan sebelumnya tetap ditampilkan." : ""),
+      (stock.length
+        ? " Tampilan sebelumnya tetap ditampilkan."
+        : ""),
       true
     );
   } finally {
@@ -910,19 +994,7 @@ async function loadStock() {
   }
 }
 
-function timestamp() {
-  const date = new Date();
-  const pad = value => String(value).padStart(2, "0");
-
-  return (
-    date.getFullYear() +
-    pad(date.getMonth() + 1) +
-    pad(date.getDate()) + "_" +
-    pad(date.getHours()) +
-    pad(date.getMinutes()) +
-    pad(date.getSeconds())
-  );
-}
+// ================= DOWNLOAD LOGLIST =================
 
 async function downloadLoglist() {
   const button = $("download");
@@ -934,10 +1006,11 @@ async function downloadLoglist() {
     const rows = parseCSV(text);
 
     if (rows.length < 2 || rows[0].length < 2) {
-      throw new Error("File Loglist kosong atau formatnya tidak sesuai.");
+      throw new Error(
+        "File Loglist kosong atau formatnya tidak sesuai."
+      );
     }
 
-    // Tambahkan BOM agar karakter terbaca baik ketika dibuka di Excel.
     const blob = new Blob(
       ["\uFEFF", text.replace(/^\uFEFF/, "")],
       { type: "text/csv;charset=utf-8" }
@@ -949,6 +1022,7 @@ async function downloadLoglist() {
 
     link.href = url;
     link.download = filename;
+
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -967,8 +1041,293 @@ async function downloadLoglist() {
   }
 }
 
+// ================= DOWNLOAD PDF =================
+
+async function downloadPDF() {
+  const button = $("downloadPDF");
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
+
+  try {
+    if (!window.jspdf) {
+      throw new Error(
+        "Komponen PDF belum termuat. Muat ulang halaman."
+      );
+    }
+
+    const selected = $("position").value;
+    const byVolume = $("basis").value === "volume";
+    const filtered = filteredStock();
+
+    if (!filtered.length) {
+      throw new Error("Belum ada data untuk diunduh.");
+    }
+
+    const doc = new window.jspdf.jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4"
+    });
+
+    if (typeof doc.autoTable !== "function") {
+      throw new Error("Komponen tabel PDF belum termuat.");
+    }
+
+    const totalBatang = sum(filtered, "batang");
+    const totalVolume = sum(filtered, "volume");
+
+    let titleX = 14;
+    const logo = $("logo");
+
+    if (logo.complete && logo.naturalWidth > 0) {
+      try {
+        const scale = Math.min(
+          18 / logo.naturalWidth,
+          18 / logo.naturalHeight
+        );
+
+        const width = logo.naturalWidth * scale;
+        const height = logo.naturalHeight * scale;
+
+        doc.addImage(
+          logo,
+          "PNG",
+          14 + (18 - width) / 2,
+          12 + (18 - height) / 2,
+          width,
+          height
+        );
+
+        titleX = 37;
+      } catch (error) {
+        console.warn(
+          "Logo tidak dapat dimasukkan ke PDF.",
+          error
+        );
+      }
+    }
+
+    doc.setTextColor(48, 45, 39);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+
+    doc.text("PROSENTASE STOCK IBS", titleX, 18);
+    doc.text("BERDASARKAN PANJANG KAYU", titleX, 25);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.text("Dicetak: " + jakartaTime(), 14, 38);
+
+    const positionLines = doc.splitTextToSize(
+      "Posisi: " + (selected || "Semua Posisi"),
+      182
+    );
+
+    doc.text(positionLines, 14, 44);
+
+    let y = 44 + positionLines.length * 4.5;
+
+    doc.text(
+      "Dasar persentase: " +
+      (byVolume ? "volume" : "jumlah batang") +
+      " pada masing-masing posisi.",
+      14,
+      y
+    );
+
+    y += 7;
+
+    doc.setFont("helvetica", "bold");
+    doc.text(
+      "Total: " + number(totalBatang) + " batang | " +
+      number(totalVolume, 4) + " m³",
+      14,
+      y
+    );
+
+    y += 10;
+
+    for (const [position, rows] of groupStock(filtered)) {
+      const batang = sum(rows, "batang");
+      const volume = sum(rows, "volume");
+      const missing = sum(rows, "kosong");
+      const denominator = byVolume ? volume : batang;
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+
+      const heading = doc.splitTextToSize(position, 182);
+      const headingHeight = heading.length * 5;
+
+      if (y + headingHeight + 25 > 277) {
+        doc.addPage();
+        y = 18;
+      }
+
+      doc.setTextColor(105, 80, 39);
+      doc.text(heading, 14, y);
+
+      y += headingHeight + 2;
+
+      doc.autoTable({
+        startY: y,
+        margin: {
+          top: 18,
+          right: 14,
+          bottom: 20,
+          left: 14
+        },
+        theme: "grid",
+        head: [[
+          "Panjang",
+          "Batang",
+          "Volume (m³)",
+          byVolume ? "% Volume" : "% Batang"
+        ]],
+        body: rows.map(row => {
+          const numerator = byVolume
+            ? row.volume
+            : row.batang;
+
+          const percent = denominator > 0
+            ? number(numerator / denominator * 100, 2) + "%"
+            : "-";
+
+          return [
+            row.panjang + "M",
+            number(row.batang),
+            number(row.volume, 4),
+            percent
+          ];
+        }),
+        foot: [[
+          "TOTAL",
+          number(batang),
+          number(volume, 4),
+          denominator > 0 ? "100,00%" : "-"
+        ]],
+        showFoot: "lastPage",
+        rowPageBreak: "avoid",
+        styles: {
+          font: "helvetica",
+          fontSize: 9,
+          cellPadding: 2.8,
+          textColor: [35, 35, 35],
+          lineColor: [215, 208, 194],
+          lineWidth: 0.15,
+          halign: "right"
+        },
+        columnStyles: {
+          0: {
+            halign: "left",
+            cellWidth: 38
+          }
+        },
+        headStyles: {
+          fillColor: [128, 99, 51],
+          textColor: [255, 255, 255],
+          fontStyle: "bold"
+        },
+        footStyles: {
+          fillColor: [238, 229, 211],
+          textColor: [35, 35, 35],
+          fontStyle: "bold"
+        },
+        alternateRowStyles: {
+          fillColor: [250, 247, 240]
+        }
+      });
+
+      y = doc.lastAutoTable.finalY + 6;
+
+      if (missing) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+
+        const note = doc.splitTextToSize(
+          "Catatan: " + number(missing) +
+          " batang belum memiliki volume. Persentase volume " +
+          "berdasarkan volume yang terisi.",
+          182
+        );
+
+        const noteHeight = note.length * 4;
+
+        if (y + noteHeight > 277) {
+          doc.addPage();
+          y = 18;
+        }
+
+        doc.setTextColor(80, 70, 50);
+        doc.text(note, 14, y);
+        y += noteHeight + 3;
+      }
+
+      y += 5;
+    }
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+
+    const explanation = doc.splitTextToSize(
+      "Kelompok panjang dibulatkan turun setiap 0,5 meter. " +
+      "Contoh: 2,00-2,49 m menjadi 2M dan 2,50-2,99 m " +
+      "menjadi 2.5M. Pembulatan persentase dapat menyebabkan " +
+      "jumlah sedikit berbeda dari 100%.",
+      182
+    );
+
+    if (y + explanation.length * 4 > 277) {
+      doc.addPage();
+      y = 18;
+    }
+
+    doc.setTextColor(80, 80, 80);
+    doc.text(explanation, 14, y);
+
+    const pages = doc.getNumberOfPages();
+
+    for (let page = 1; page <= pages; page++) {
+      doc.setPage(page);
+      doc.setDrawColor(220, 214, 202);
+      doc.line(14, 284, 196, 284);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(100, 100, 100);
+
+      doc.text(
+        "IBS | Rekap Panjang Stock Kayu",
+        14,
+        290
+      );
+
+      doc.text(
+        "Halaman " + page + " / " + pages,
+        196,
+        290,
+        { align: "right" }
+      );
+    }
+
+    const filename =
+      "Stock_panjang_ibs_" + timestamp() + ".pdf";
+
+    await doc.save(filename, { returnPromise: true });
+    setStatus("Unduhan PDF dimulai: " + filename);
+  } catch (error) {
+    setStatus("Gagal membuat PDF. " + error.message, true);
+  } finally {
+    button.disabled = !filteredStock().length;
+    button.removeAttribute("aria-busy");
+  }
+}
+
+// ================= EVENT =================
+
 $("refresh").addEventListener("click", loadStock);
 $("download").addEventListener("click", downloadLoglist);
+$("downloadPDF").addEventListener("click", downloadPDF);
 $("position").addEventListener("change", render);
 $("basis").addEventListener("change", render);
 
