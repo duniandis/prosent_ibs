@@ -1,1337 +1,857 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#806333">
-<title>PROSENTASE STOCK IBS BERDASARKAN PANJANG KAYU</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#806333">
+  <meta name="description" content="Persentase stock kayu IBS berdasarkan panjang kayu.">
+  <title>Prosentase Stock IBS Berdasarkan Panjang Kayu</title>
+  <style>
+    :root {
+      --canvas: #f5f2eb;
+      --surface: #fffdfa;
+      --ink: #302d27;
+      --muted: #726b5e;
+      --gold: #806333;
+      --gold-deep: #674d27;
+      --gold-soft: #f1e8d6;
+      --line: #e3dccf;
+      --warn: #845c20;
+      --shadow: 0 9px 28px rgba(67, 49, 20, .055);
+    }
 
-<style>
-:root {
-  --bg: #f6f3ec;
-  --paper: #fffdf8;
-  --text: #302d27;
-  --muted: #70695e;
-  --gold: #806333;
-  --gold-light: #eee5d3;
-  --border: #e3dccf;
-  --shadow: 0 8px 28px rgba(64,49,24,.045);
-}
+    * { box-sizing: border-box; }
 
-* { box-sizing: border-box; }
+    html { background: var(--canvas); }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: "Segoe UI", Arial, sans-serif;
-  line-height: 1.5;
-}
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.5;
+    }
 
-button, select { font: inherit; }
-button { cursor: pointer; }
-button:disabled { opacity: .6; cursor: wait; }
+    button, select { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: wait; opacity: .62; }
 
-button:focus-visible, select:focus-visible {
-  outline: 3px solid #b79a62;
-  outline-offset: 3px;
-}
+    button:focus-visible, select:focus-visible {
+      outline: 3px solid #b69a66;
+      outline-offset: 3px;
+    }
 
-.wrap {
-  max-width: 1180px;
-  margin: auto;
-  padding: 0 24px;
-}
+    .wrap {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
 
-header {
-  background: var(--paper);
-  border-top: 5px solid var(--gold);
-  border-bottom: 1px solid var(--border);
-}
+    header {
+      border-top: 5px solid var(--gold);
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 29px 0;
+    }
 
-.logo-box {
-  flex: 0 0 82px;
-  width: 82px;
-  height: 82px;
-  display: grid;
-  place-items: center;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 9px;
-}
+    .logo-box {
+      display: grid;
+      place-items: center;
+      flex: 0 0 80px;
+      width: 80px;
+      height: 80px;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+    }
 
-.logo-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
+    .logo-box img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
 
-.logo-fallback {
-  color: var(--gold);
-  font-size: 25px;
-  font-weight: 800;
-  letter-spacing: 2px;
-}
+    .logo-fallback {
+      color: var(--gold);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
 
-.eyebrow {
-  margin: 0 0 7px;
-  color: var(--gold);
-  font-size: 11px;
-  letter-spacing: 2px;
-  font-weight: 700;
-}
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 1.9px;
+    }
 
-h1 {
-  max-width: 820px;
-  margin: 0;
-  font-size: clamp(20px,3vw,30px);
-  line-height: 1.3;
-  letter-spacing: -.5px;
-}
+    h1 {
+      max-width: 880px;
+      margin: 0;
+      font-size: clamp(21px, 3vw, 31px);
+      line-height: 1.25;
+      letter-spacing: -.55px;
+    }
 
-.subtitle {
-  margin: 9px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-}
+    .subtitle {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-main {
-  padding-top: 26px !important;
-  padding-bottom: 34px !important;
-}
+    main { padding: 26px 0 36px; }
 
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 20px;
-}
+    .toolbar {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
 
-.filters, .actions {
-  display: flex;
-  align-items: end;
-  gap: 10px;
-  flex-wrap: wrap;
-}
+    .filters, .actions {
+      display: flex;
+      align-items: end;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-.field label {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
+    .field label {
+      display: block;
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
 
-select, .btn {
-  min-height: 43px;
-  border-radius: 9px;
-  border: 1px solid var(--border);
-}
+    select, .button {
+      min-height: 43px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+    }
 
-select {
-  background: var(--paper);
-  color: var(--text);
-  padding: 9px 32px 9px 12px;
-  max-width: 100%;
-}
+    select {
+      max-width: 100%;
+      padding: 9px 32px 9px 12px;
+      color: var(--ink);
+      background: var(--surface);
+    }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 15px;
-  font-size: 13px;
-  font-weight: 650;
-  background: var(--paper);
-  color: var(--text);
-}
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      color: var(--ink);
+      background: var(--surface);
+      font-size: 13px;
+      font-weight: 700;
+    }
 
-.btn:hover { background: #f0eadf; }
+    .button:hover:not(:disabled) { background: #f2ece2; }
 
-.btn-primary {
-  background: var(--gold);
-  color: #fff;
-  border-color: var(--gold);
-}
+    .button-primary {
+      border-color: var(--gold);
+      color: #fff;
+      background: var(--gold);
+    }
 
-.btn-primary:hover { background: #6c522a; }
+    .button-primary:hover:not(:disabled) { background: var(--gold-deep); }
 
-.status {
-  font-size: 12px;
-  color: var(--muted);
-  margin: 0 0 18px;
-  overflow-wrap: anywhere;
-}
+    .button svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
-.status.error { color: #a33d2d; }
+    .status {
+      min-height: 18px;
+      margin: 0 0 17px;
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
 
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(4,minmax(0,1fr));
-  gap: 14px;
-  margin-bottom: 23px;
-}
+    .status.error { color: #a1392e; }
 
-.metric {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  padding: 19px 20px;
-  border-radius: 13px;
-  box-shadow: var(--shadow);
-}
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 25px;
+    }
 
-.metric-label {
-  font-size: 12px;
-  color: var(--muted);
-}
+    .metric {
+      min-width: 0;
+      padding: 19px 20px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
 
-.metric-value {
-  margin-top: 7px;
-  font-size: clamp(23px,3vw,31px);
-  font-weight: 700;
-  letter-spacing: -.6px;
-  font-variant-numeric: tabular-nums;
-  overflow-wrap: anywhere;
-}
+    .metric-label {
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-.metric-value small {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-  letter-spacing: 0;
-}
+    .metric-value {
+      margin-top: 7px;
+      font-size: clamp(23px, 3vw, 31px);
+      font-weight: 750;
+      letter-spacing: -.75px;
+      font-variant-numeric: tabular-nums;
+      overflow-wrap: anywhere;
+    }
 
-.section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 13px;
-}
+    .metric-value small {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
 
-h2 { margin: 0; font-size: 17px; }
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 13px;
+    }
 
-.basis-note {
-  font-size: 12px;
-  color: var(--muted);
-}
+    h2 { margin: 0; font-size: 17px; }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 20px;
-  align-items: start;
-}
+    .basis-note {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
 
-.card {
-  min-width: 0;
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
 
-.card-header {
-  padding: 19px 20px;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(110deg,#f5eedf,var(--paper));
-}
+    .card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
 
-.card-title-line {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
+    .overall-card {
+      grid-column: 1 / -1;
+      margin-top: 4px;
+      border-color: #cdb889;
+    }
 
-.card h3 {
-  margin: 0;
-  font-size: 15px;
-  letter-spacing: .3px;
-  overflow-wrap: anywhere;
-}
+    .card-header {
+      padding: 19px 20px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(110deg, #f5eedf, var(--surface));
+    }
 
-.badge {
-  white-space: nowrap;
-  font-size: 10px;
-  color: var(--gold);
-  background: var(--gold-light);
-  border-radius: 20px;
-  padding: 4px 9px;
-}
+    .overall-card .card-header {
+      background: linear-gradient(110deg, #e9ddc4, #fffdf8 77%);
+    }
 
-.card-summary {
-  margin: 7px 0 0;
-  color: var(--muted);
-  font-size: 12px;
-}
+    .card-title-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
-table {
-  border-collapse: collapse;
-  table-layout: fixed;
-  width: 100%;
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-}
+    .card h3 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: .25px;
+      overflow-wrap: anywhere;
+    }
 
-th, td {
-  padding: 11px 12px;
-  text-align: right;
-  border-bottom: 1px solid #eee8dd;
-  vertical-align: middle;
-  overflow-wrap: anywhere;
-}
+    .badge {
+      flex: 0 0 auto;
+      padding: 4px 9px;
+      border-radius: 20px;
+      color: var(--gold);
+      background: var(--gold-soft);
+      font-size: 10px;
+      white-space: nowrap;
+    }
 
-th {
-  background: #faf7f0;
-  font-size: 10px;
-  color: var(--muted);
-  font-weight: 700;
-}
+    .card-summary {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-th:first-child, td:first-child { text-align: left; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
 
-th:nth-child(1) { width: 19%; }
-th:nth-child(2) { width: 17%; }
-th:nth-child(3) { width: 27%; }
-th:nth-child(4) { width: 37%; }
+    th, td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #eee8dd;
+      text-align: right;
+      vertical-align: middle;
+      overflow-wrap: anywhere;
+    }
 
-tbody tr:nth-child(even) { background: #fdfaf4; }
-tbody tr:hover { background: #f4eddf; }
+    th {
+      color: var(--muted);
+      background: #faf7f0;
+      font-size: 10px;
+      font-weight: 750;
+    }
 
-.length { font-weight: 700; }
-.percent { font-weight: 700; color: var(--gold); }
+    th:first-child, td:first-child { text-align: left; }
+    th:nth-child(1) { width: 19%; }
+    th:nth-child(2) { width: 17%; }
+    th:nth-child(3) { width: 27%; }
+    th:nth-child(4) { width: 37%; }
 
-.track {
-  height: 5px;
-  background: #eae3d5;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-top: 5px;
-}
+    tbody tr:nth-child(even) { background: #fdfaf4; }
+    tbody tr:hover { background: #f4eddf; }
 
-.fill {
-  height: 100%;
-  background: #9b7a42;
-  border-radius: inherit;
-}
+    .length { font-weight: 750; }
+    .percent { color: var(--gold); font-weight: 750; }
 
-tfoot td {
-  font-size: 12px;
-  background: #f3edde;
-  border-bottom: 0;
-  font-weight: 700;
-}
+    .track {
+      height: 5px;
+      margin-top: 5px;
+      overflow: hidden;
+      border-radius: 5px;
+      background: #eae3d5;
+    }
 
-.card-warning {
-  margin: 0;
-  padding: 10px 16px;
-  font-size: 11px;
-  color: #815d27;
-  background: #faf2e1;
-  border-top: 1px solid var(--border);
-}
+    .fill {
+      height: 100%;
+      border-radius: inherit;
+      background: #9b7a42;
+    }
 
-.explanation {
-  margin-top: 22px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px 18px;
-  color: var(--muted);
-  font-size: 12px;
-  background: #f0ece3;
-}
+    tfoot td {
+      border-bottom: 0;
+      background: #f3edde;
+      font-size: 12px;
+      font-weight: 750;
+    }
 
-.explanation p { margin: 0; }
-.explanation p + p { margin-top: 5px; }
+    .card-warning {
+      margin: 0;
+      padding: 10px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--warn);
+      background: #faf2e1;
+      font-size: 11px;
+    }
 
-.empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 50px 20px;
-  color: var(--muted);
-  background: var(--paper);
-  border: 1px dashed var(--border);
-  border-radius: 14px;
-}
+    .overall-note {
+      margin: 0;
+      padding: 11px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      background: #faf7ef;
+      font-size: 11px;
+    }
 
-footer {
-  padding: 20px 0;
-  border-top: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 11px;
-  text-align: center;
-}
+    .explanation {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--muted);
+      background: #f0ece3;
+      font-size: 12px;
+    }
 
-[hidden] { display: none !important; }
+    .explanation p { margin: 0; }
+    .explanation p + p { margin-top: 5px; }
 
-@media (max-width: 720px) {
-  .wrap { padding-left: 15px; padding-right: 15px; }
-  .brand { gap: 13px; padding-top: 22px; padding-bottom: 22px; }
-  .logo-box {
-    flex-basis: 65px;
-    width: 65px;
-    height: 65px;
-    border-radius: 13px;
-  }
-  .eyebrow { font-size: 9px; letter-spacing: 1.4px; }
-  h1 { font-size: 19px; }
-  .subtitle { font-size: 11px; }
-  .metrics {
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 10px;
-  }
-  .metric { padding: 14px; }
-  .metric-value { font-size: 25px; }
-  .cards { grid-template-columns: 1fr; gap: 16px; }
-  .toolbar, .filters, .actions { width: 100%; }
-  .filters .field { flex: 1; min-width: 0; }
-  select { width: 100%; font-size: 12px; padding-left: 9px; }
-  .actions { gap: 7px; }
-  .actions .btn {
-    flex: 1 1 90px;
-    padding: 10px 8px;
-    font-size: 11px;
-  }
-  .section-heading {
-    align-items: start;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .card-header { padding: 16px; }
-}
+    .empty {
+      grid-column: 1 / -1;
+      padding: 50px 20px;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      color: var(--muted);
+      background: var(--surface);
+      text-align: center;
+    }
 
-@media (max-width: 380px) {
-  h1 { font-size: 16px; }
-  .logo-box { flex-basis: 55px; width: 55px; height: 55px; }
-  th, td { padding: 10px 7px; font-size: 11px; }
-  th { font-size: 9px; }
-  .metric-value { font-size: 22px; }
-}
+    footer {
+      padding: 20px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+    }
 
-@media print {
-  body { background: #fff; color: #000; }
-  .toolbar, .status, footer { display: none; }
-  .wrap { max-width: none; padding: 0; }
-  header { border-top: 0; }
-  .cards { display: block; }
-  .card {
-    margin-bottom: 18px;
-    break-inside: avoid;
-    box-shadow: none;
-  }
-  .metric { box-shadow: none; }
-}
-</style>
+    [hidden] { display: none !important; }
+
+    @media (max-width: 720px) {
+      .wrap { width: min(100% - 30px, 1180px); }
+      .brand { gap: 13px; padding: 22px 0; }
+      .logo-box { flex-basis: 65px; width: 65px; height: 65px; border-radius: 13px; }
+      .eyebrow { font-size: 9px; letter-spacing: 1.4px; }
+      h1 { font-size: 19px; }
+      .subtitle { font-size: 11px; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .metric { padding: 14px; }
+      .metric-value { font-size: 25px; }
+      .cards { grid-template-columns: 1fr; gap: 16px; }
+      .toolbar, .filters, .actions { width: 100%; }
+      .filters .field { flex: 1; min-width: 0; }
+      select { width: 100%; padding-left: 9px; font-size: 12px; }
+      .actions { gap: 7px; }
+      .actions .button { flex: 1 1 90px; padding: 10px 8px; font-size: 11px; }
+      .section-heading { align-items: start; flex-direction: column; gap: 4px; }
+      .basis-note { text-align: left; }
+      .card-header { padding: 16px; }
+    }
+
+    @media (max-width: 380px) {
+      h1 { font-size: 16px; }
+      .logo-box { flex-basis: 55px; width: 55px; height: 55px; }
+      th, td { padding: 10px 7px; font-size: 11px; }
+      th { font-size: 9px; }
+      .metric-value { font-size: 22px; }
+    }
+
+    @media print {
+      body { background: #fff; color: #000; }
+      .toolbar, .status, footer { display: none; }
+      .wrap { width: auto; margin: 0; }
+      header { border-top: 0; }
+      .cards { display: block; }
+      .card { margin-bottom: 18px; break-inside: avoid; box-shadow: none; }
+      .metric { box-shadow: none; }
+    }
+  </style>
 </head>
 
 <body>
-<header>
-  <div class="wrap brand">
-    <div class="logo-box">
-      <img id="logo" src="./LOGO.png" alt="Logo IBS">
-      <span id="logoFallback" class="logo-fallback" hidden>IBS</span>
-    </div>
-
-    <div>
-      <p class="eyebrow">MONITORING PERSEDIAAN KAYU</p>
-      <h1>PROSENTASE STOCK IBS BERDASARKAN PANJANG KAYU</h1>
-      <p class="subtitle">
-        Distribusi panjang kayu pada setiap posisi stock
-      </p>
-    </div>
-  </div>
-</header>
-
-<main class="wrap">
-  <div class="toolbar">
-    <div class="filters">
-      <div class="field">
-        <label for="position">POSISI STOCK</label>
-        <select id="position" disabled>
-          <option value="">Semua Posisi</option>
-        </select>
+  <header>
+    <div class="wrap brand">
+      <div class="logo-box">
+        <img id="logo" src="./LOGO.png" alt="Logo IBS">
+        <span id="logoFallback" class="logo-fallback" hidden>IBS</span>
       </div>
-
-      <div class="field">
-        <label for="basis">DASAR PERSENTASE</label>
-        <select id="basis">
-          <option value="batang">Jumlah Batang</option>
-          <option value="volume" selected>Volume Kayu</option>
-        </select>
+      <div>
+        <p class="eyebrow">MONITORING PERSEDIAAN KAYU</p>
+        <h1>PROSENTASE STOCK IBS BERDASARKAN PANJANG KAYU</h1>
+        <p class="subtitle">Distribusi panjang kayu pada setiap posisi stock</p>
       </div>
     </div>
-
-    <div class="actions">
-      <button id="refresh" class="btn" type="button">
-        Perbarui Data
-      </button>
-
-      <button id="downloadPDF" class="btn" type="button" disabled>
-        Download PDF
-      </button>
-
-      <button id="download" class="btn btn-primary" type="button">
-        Download Loglist
-      </button>
-    </div>
-  </div>
-
-  <p id="status" class="status" role="status" aria-live="polite">
-    Memuat data stock…
-  </p>
-
-  <div class="metrics">
-    <div class="metric">
-      <div class="metric-label">Total Batang</div>
-      <div class="metric-value">
-        <span id="totalBatang">—</span> <small>btg</small>
-      </div>
-    </div>
-
-    <div class="metric">
-      <div class="metric-label">Total Volume</div>
-      <div class="metric-value">
-        <span id="totalVolume">—</span> <small>m³</small>
-      </div>
-    </div>
-
-    <div class="metric">
-      <div class="metric-label">Posisi Stock</div>
-      <div id="totalPosisi" class="metric-value">—</div>
-    </div>
-
-    <div class="metric">
-      <div class="metric-label">Variasi Panjang</div>
-      <div class="metric-value">
-        <span id="totalPanjang">—</span> <small>kelompok</small>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-heading">
-    <h2>Rekap Panjang per Posisi</h2>
-    <span id="basisNote" class="basis-note">
-      Persentase terhadap total volume setiap posisi
-    </span>
-  </div>
-
-  <div id="cards" class="cards" aria-busy="true">
-    <div class="empty">Sedang mengambil rekap terbaru…</div>
-  </div>
-
-  <div class="explanation">
-    <p>
-      <strong>Kelompok panjang:</strong>
-      2,00–2,49 m menjadi 2M;
-      2,50–2,99 m menjadi 2.5M; dan seterusnya.
-    </p>
-    <p>
-      Persentase dihitung pada masing-masing posisi.
-      Total ringkasan dan PDF mengikuti filter posisi.
-      Pembulatan dapat menyebabkan jumlah persentase
-      sedikit berbeda dari 100%.
-    </p>
-    <p>
-      Batang dengan volume kosong tetap dihitung dalam jumlah batang.
-      Persentase volume memakai volume yang sudah terisi.
-      Download Loglist mengambil seluruh data loglist.
-    </p>
-  </div>
-
-  <noscript>
-    <p>Aktifkan JavaScript agar data dan tombol download dapat digunakan.</p>
-  </noscript>
-</main>
-
-<footer>IBS · Monitoring Stock Kayu</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
-
-<script>
-"use strict";
-
-// ================= SUMBER DATA =================
-
-const CSV_URL =
-  "https://raw.githubusercontent.com/duniandis/data_apk/refs/heads/main/prosent_ibs.csv";
-
-const LOGLIST_URL =
-  "https://raw.githubusercontent.com/duniandis/data_apk/refs/heads/main/loglist_ibs_prosent.csv";
-
-// ================= HELPER =================
-
-const $ = id => document.getElementById(id);
-
-const number = (value, digits = 0) =>
-  new Intl.NumberFormat("id-ID", {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits
-  }).format(value);
-
-const escapeHTML = value => String(value).replace(
-  /[&<>"']/g,
-  character => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[character]
-);
-
-const sum = (rows, key) =>
-  rows.reduce((total, row) => total + row[key], 0);
-
-let stock = [];
-
-function setStatus(message, error = false) {
-  $("status").textContent = message;
-  $("status").classList.toggle("error", error);
-}
-
-function timestamp() {
-  const date = new Date();
-  const pad = value => String(value).padStart(2, "0");
-
-  return (
-    date.getFullYear() +
-    pad(date.getMonth() + 1) +
-    pad(date.getDate()) + "_" +
-    pad(date.getHours()) +
-    pad(date.getMinutes()) +
-    pad(date.getSeconds())
-  );
-}
-
-function jakartaTime() {
-  return new Intl.DateTimeFormat("id-ID", {
-    dateStyle: "medium",
-    timeStyle: "medium",
-    timeZone: "Asia/Jakarta"
-  }).format(new Date()) + " WIB";
-}
-
-function positionSort(a, b) {
-  if (a === b) return 0;
-  if (a.toUpperCase() === "BLOK") return -1;
-  if (b.toUpperCase() === "BLOK") return 1;
-  return a.localeCompare(b, "id", { numeric: true });
-}
-
-function filteredStock() {
-  const selected = $("position").value;
-  return stock.filter(row => !selected || row.posisi === selected);
-}
-
-function groupStock(rows) {
-  const groups = new Map();
-
-  for (const row of rows) {
-    if (!groups.has(row.posisi)) groups.set(row.posisi, []);
-    groups.get(row.posisi).push(row);
-  }
-
-  return [...groups.entries()]
-    .sort((a, b) => positionSort(a[0], b[0]))
-    .map(([position, items]) => [
-      position,
-      [...items].sort((a, b) => a.panjang - b.panjang)
-    ]);
-}
-
-function logoFallback() {
-  $("logo").hidden = true;
-  $("logoFallback").hidden = false;
-}
-
-$("logo").addEventListener("error", logoFallback);
-
-if ($("logo").complete && !$("logo").naturalWidth) {
-  logoFallback();
-}
-
-// ================= PEMBACA CSV =================
-
-function parseCSV(text) {
-  text = text.replace(/^\uFEFF/, "");
-
-  const rows = [];
-  let row = [];
-  let cell = "";
-  let quoted = false;
-
-  for (let i = 0; i < text.length; i++) {
-    const character = text[i];
-
-    if (character === '"') {
-      if (quoted && text[i + 1] === '"') {
-        cell += '"';
-        i++;
-      } else {
-        quoted = !quoted;
-      }
-    } else if (character === "," && !quoted) {
-      row.push(cell);
-      cell = "";
-    } else if (
-      (character === "\n" || character === "\r") && !quoted
-    ) {
-      if (character === "\r" && text[i + 1] === "\n") i++;
-
-      row.push(cell);
-
-      if (row.some(value => value.trim() !== "")) {
-        rows.push(row);
-      }
-
-      row = [];
-      cell = "";
-    } else {
-      cell += character;
-    }
-  }
-
-  if (quoted) {
-    throw new Error("Format kutipan CSV tidak lengkap.");
-  }
-
-  row.push(cell);
-
-  if (row.some(value => value.trim() !== "")) {
-    rows.push(row);
-  }
-
-  return rows;
-}
-
-function readStock(text) {
-  const rows = parseCSV(text);
-
-  if (!rows.length) throw new Error("CSV kosong.");
-
-  const headers = rows.shift().map(value =>
-    value.trim().toLowerCase()
-  );
-
-  const required = [
-    "posisi",
-    "panjang_m",
-    "batang",
-    "volume_m3",
-    "volume_kosong"
-  ];
-
-  for (const column of required) {
-    if (!headers.includes(column)) {
-      throw new Error("Kolom CSV tidak ditemukan: " + column);
-    }
-  }
-
-  const records = rows.map((row, index) => {
-    const field = name => {
-      const column = headers.indexOf(name);
-      return column < 0 ? "" : (row[column] || "").trim();
-    };
-
-    function numeric(name, allowBlank = false) {
-      const raw = field(name);
-
-      if (!raw && !allowBlank) {
-        throw new Error(
-          `Baris ${index + 2}: kolom ${name} kosong.`
-        );
-      }
-
-      const value = raw ? Number(raw.replace(",", ".")) : 0;
-
-      if (!Number.isFinite(value) || value < 0) {
-        throw new Error(
-          `Baris ${index + 2}: kolom ${name} tidak valid.`
-        );
-      }
-
-      return value;
-    }
-
-    const posisi = field("posisi");
-
-    if (!posisi) {
-      throw new Error(`Baris ${index + 2}: posisi kosong.`);
-    }
-
-    const result = {
-      posisi,
-      panjang: numeric("panjang_m"),
-      batang: numeric("batang"),
-      volume: numeric("volume_m3", true),
-      kosong: numeric("volume_kosong", true)
-    };
-
-    if (
-      result.panjang <= 0 ||
-      !Number.isInteger(result.batang) ||
-      !Number.isInteger(result.kosong) ||
-      result.kosong > result.batang
-    ) {
-      throw new Error(
-        `Baris ${index + 2}: nilai rekap tidak valid.`
-      );
-    }
-
-    return result;
-  });
-
-  if (!records.length) {
-    throw new Error("Belum ada baris rekap stock.");
-  }
-
-  return records;
-}
-
-async function fetchText(url) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 30000);
-
-  try {
-    const response = await fetch(
-      url + (url.includes("?") ? "&" : "?") + "t=" + Date.now(),
-      {
-        cache: "no-store",
-        signal: controller.signal
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        "Server mengembalikan HTTP " + response.status
-      );
-    }
-
-    return await response.text();
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-// ================= TAMPILAN =================
-
-function render() {
-  const byVolume = $("basis").value === "volume";
-  const filtered = filteredStock();
-  const groups = groupStock(filtered);
-
-  $("totalBatang").textContent = number(sum(filtered, "batang"));
-  $("totalVolume").textContent = number(sum(filtered, "volume"), 4);
-  $("totalPosisi").textContent = number(groups.length);
-  $("totalPanjang").textContent = number(
-    new Set(filtered.map(row => row.panjang)).size
-  );
-
-  $("basisNote").textContent =
-    "Persentase terhadap total " +
-    (byVolume ? "volume" : "batang") +
-    " setiap posisi";
-
-  $("downloadPDF").disabled = !filtered.length;
-
-  if (!filtered.length) {
-    $("cards").innerHTML =
-      '<div class="empty">Tidak ada data pada posisi ini.</div>';
-    return;
-  }
-
-  $("cards").innerHTML = groups.map(([position, rows]) => {
-    const totalBatang = sum(rows, "batang");
-    const totalVolume = sum(rows, "volume");
-    const missingVolume = sum(rows, "kosong");
-    const denominator = byVolume ? totalVolume : totalBatang;
-
-    const body = rows.map(row => {
-      const numerator = byVolume ? row.volume : row.batang;
-
-      const percent = denominator > 0
-        ? numerator / denominator * 100
-        : null;
-
-      const width = percent === null
-        ? 0
-        : Math.max(0, Math.min(100, percent));
-
-      return `
-        <tr>
-          <td class="length">
-            ${escapeHTML(row.panjang + "M")}
-          </td>
-          <td>${number(row.batang)}</td>
-          <td>${number(row.volume, 4)}</td>
-          <td>
-            <span class="percent">
-              ${percent === null ? "—" : number(percent, 2) + "%"}
-            </span>
-            <div class="track" aria-hidden="true">
-              <div class="fill" style="width:${width}%"></div>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join("");
-
-    const warning = missingVolume
-      ? `<p class="card-warning">
-          ${number(missingVolume)} batang belum memiliki volume.
-          Persentase volume berdasarkan volume yang terisi.
-        </p>`
-      : "";
-
-    return `
-      <section class="card">
-        <div class="card-header">
-          <div class="card-title-line">
-            <h3>${escapeHTML(position)}</h3>
-            <span class="badge">${rows.length} kelompok</span>
-          </div>
-          <p class="card-summary">
-            ${number(totalBatang)} batang ·
-            ${number(totalVolume, 4)} m³
-          </p>
+  </header>
+
+  <main class="wrap">
+    <div class="toolbar">
+      <div class="filters">
+        <div class="field">
+          <label for="position">POSISI STOCK</label>
+          <select id="position" disabled>
+            <option value="">Semua Posisi</option>
+          </select>
         </div>
-
-        <table aria-label="Rekap panjang ${escapeHTML(position)}">
-          <thead>
-            <tr>
-              <th scope="col">Panjang</th>
-              <th scope="col">Batang</th>
-              <th scope="col">Volume m³</th>
-              <th scope="col">
-                % ${byVolume ? "Volume" : "Batang"}
-              </th>
-            </tr>
-          </thead>
-          <tbody>${body}</tbody>
-          <tfoot>
-            <tr>
-              <td>Total</td>
-              <td>${number(totalBatang)}</td>
-              <td>${number(totalVolume, 4)}</td>
-              <td>${denominator > 0 ? "100,00%" : "—"}</td>
-            </tr>
-          </tfoot>
-        </table>
-
-        ${warning}
-      </section>
-    `;
-  }).join("");
-}
-
-async function loadStock() {
-  $("refresh").disabled = true;
-  $("cards").setAttribute("aria-busy", "true");
-  setStatus("Mengambil data terbaru…");
-
-  try {
-    const updated = readStock(await fetchText(CSV_URL));
-    const previousSelection = $("position").value;
-
-    stock = updated;
-
-    const positions = [...new Set(stock.map(row => row.posisi))]
-      .sort(positionSort);
-
-    $("position").replaceChildren(
-      new Option("Semua Posisi", ""),
-      ...positions.map(position => new Option(position, position))
-    );
-
-    if (positions.includes(previousSelection)) {
-      $("position").value = previousSelection;
-    }
-
-    $("position").disabled = false;
-    render();
-
-    setStatus("Data berhasil dimuat · " + jakartaTime());
-  } catch (error) {
-    const reason = error.name === "AbortError"
-      ? "Koneksi melewati batas waktu. Coba kembali."
-      : error.message;
-
-    if (!stock.length) {
-      $("cards").innerHTML = `
-        <div class="empty">
-          Data belum dapat dimuat.<br>
-          Tekan <strong>Perbarui Data</strong>
-          untuk mencoba lagi.
+        <div class="field">
+          <label for="basis">DASAR PERSENTASE</label>
+          <select id="basis">
+            <option value="batang">Jumlah Batang</option>
+            <option value="volume" selected>Volume Kayu</option>
+          </select>
         </div>
-      `;
+      </div>
+
+      <div class="actions">
+        <button id="refresh" class="button" type="button" title="Ambil ulang data terbaru">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 7a7 7 0 0 1 12-1l2 3M4 15l2 3a7 7 0 0 0 12-1"/></svg>
+          Perbarui Data
+        </button>
+        <button id="downloadPDF" class="button" type="button" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg>
+          Download PDF
+        </button>
+        <button id="downloadLoglist" class="button button-primary" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg>
+          Download Loglist
+        </button>
+      </div>
+    </div>
+
+    <p id="status" class="status" role="status" aria-live="polite">Memuat data stock…</p>
+
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">Total Batang</div><div class="metric-value"><span id="totalBatang">—</span> <small>btg</small></div></div>
+      <div class="metric"><div class="metric-label">Total Volume</div><div class="metric-value"><span id="totalVolume">—</span> <small>m³</small></div></div>
+      <div class="metric"><div class="metric-label">Posisi Stock</div><div id="totalPosisi" class="metric-value">—</div></div>
+      <div class="metric"><div class="metric-label">Kelompok Panjang</div><div class="metric-value"><span id="totalPanjang">—</span> <small>kelompok</small></div></div>
+    </div>
+
+    <div class="section-heading">
+      <h2>Rekap Panjang per Posisi</h2>
+      <span id="basisNote" class="basis-note">Persentase terhadap total volume setiap posisi</span>
+    </div>
+
+    <div id="cards" class="cards" aria-busy="true">
+      <div class="empty">Sedang mengambil rekap terbaru…</div>
+    </div>
+
+    <div class="explanation">
+      <p><strong>Kelompok panjang:</strong> 2,00–2,49 m menjadi 2M; 2,50–2,99 m menjadi 2.5M; dan seterusnya.</p>
+      <p>Kartu <strong>KESELURUHAN POSISI</strong> di bagian paling bawah menggabungkan semua posisi stock. Kartu ini selalu memakai seluruh data, meskipun posisi tertentu sedang dipilih pada filter di atas.</p>
+      <p>Batang dengan volume kosong tetap dihitung dalam jumlah batang. Persentase volume memakai volume yang sudah terisi.</p>
+    </div>
+    <noscript><p>Aktifkan JavaScript agar data dan tombol unduhan dapat digunakan.</p></noscript>
+  </main>
+
+  <footer>IBS · Monitoring Stock Kayu</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+  <script>
+    "use strict";
+
+    const CSV_URL = "https://raw.githubusercontent.com/duniandis/data_apk/refs/heads/main/prosent_ibs.csv";
+    const LOGLIST_URL = "https://raw.githubusercontent.com/duniandis/data_apk/refs/heads/main/loglist_ibs.csv";
+
+    const $ = id => document.getElementById(id);
+    const number = (value, digits = 0) => new Intl.NumberFormat("id-ID", {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits
+    }).format(value);
+    const sum = (rows, key) => rows.reduce((total, row) => total + row[key], 0);
+    const escapeHTML = value => String(value).replace(/[&<>"']/g, character => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
+    })[character]);
+
+    let stock = [];
+
+    function setStatus(message, isError = false) {
+      $("status").textContent = message;
+      $("status").classList.toggle("error", isError);
     }
 
-    setStatus(
-      "Gagal memperbarui data. " + reason +
-      (stock.length
-        ? " Tampilan sebelumnya tetap ditampilkan."
-        : ""),
-      true
-    );
-  } finally {
-    $("refresh").disabled = false;
-    $("cards").setAttribute("aria-busy", "false");
-  }
-}
-
-// ================= DOWNLOAD LOGLIST =================
-
-async function downloadLoglist() {
-  const button = $("download");
-  button.disabled = true;
-  button.setAttribute("aria-busy", "true");
-
-  try {
-    const text = await fetchText(LOGLIST_URL);
-    const rows = parseCSV(text);
-
-    if (rows.length < 2 || rows[0].length < 2) {
-      throw new Error(
-        "File Loglist kosong atau formatnya tidak sesuai."
-      );
+    function timestamp() {
+      const date = new Date();
+      const pad = value => String(value).padStart(2, "0");
+      return date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate()) + "_" + pad(date.getHours()) + pad(date.getMinutes()) + pad(date.getSeconds());
     }
 
-    const blob = new Blob(
-      ["\uFEFF", text.replace(/^\uFEFF/, "")],
-      { type: "text/csv;charset=utf-8" }
-    );
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    const filename = "Loglist_" + timestamp() + ".csv";
-
-    link.href = url;
-    link.download = filename;
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    setTimeout(() => URL.revokeObjectURL(url), 60000);
-    setStatus("Unduhan Loglist dimulai: " + filename);
-  } catch (error) {
-    const reason = error.name === "AbortError"
-      ? "Koneksi melewati batas waktu."
-      : error.message;
-
-    setStatus("Gagal mengunduh Loglist. " + reason, true);
-  } finally {
-    button.disabled = false;
-    button.removeAttribute("aria-busy");
-  }
-}
-
-// ================= DOWNLOAD PDF =================
-
-async function downloadPDF() {
-  const button = $("downloadPDF");
-  button.disabled = true;
-  button.setAttribute("aria-busy", "true");
-
-  try {
-    if (!window.jspdf) {
-      throw new Error(
-        "Komponen PDF belum termuat. Muat ulang halaman."
-      );
+    function jakartaTime() {
+      return new Intl.DateTimeFormat("id-ID", {
+        dateStyle: "medium", timeStyle: "medium", timeZone: "Asia/Pontianak"
+      }).format(new Date()) + " WIB";
     }
 
-    const selected = $("position").value;
-    const byVolume = $("basis").value === "volume";
-    const filtered = filteredStock();
-
-    if (!filtered.length) {
-      throw new Error("Belum ada data untuk diunduh.");
+    function positionSort(a, b) {
+      if (a === b) return 0;
+      if (a.toUpperCase() === "BLOK") return -1;
+      if (b.toUpperCase() === "BLOK") return 1;
+      return a.localeCompare(b, "id", { numeric: true });
     }
 
-    const doc = new window.jspdf.jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4"
-    });
-
-    if (typeof doc.autoTable !== "function") {
-      throw new Error("Komponen tabel PDF belum termuat.");
+    function filteredStock() {
+      const selected = $("position").value;
+      return stock.filter(row => !selected || row.posisi === selected);
     }
 
-    const totalBatang = sum(filtered, "batang");
-    const totalVolume = sum(filtered, "volume");
-
-    let titleX = 14;
-    const logo = $("logo");
-
-    if (logo.complete && logo.naturalWidth > 0) {
-      try {
-        const scale = Math.min(
-          18 / logo.naturalWidth,
-          18 / logo.naturalHeight
-        );
-
-        const width = logo.naturalWidth * scale;
-        const height = logo.naturalHeight * scale;
-
-        doc.addImage(
-          logo,
-          "PNG",
-          14 + (18 - width) / 2,
-          12 + (18 - height) / 2,
-          width,
-          height
-        );
-
-        titleX = 37;
-      } catch (error) {
-        console.warn(
-          "Logo tidak dapat dimasukkan ke PDF.",
-          error
-        );
+    function groupStock(rows) {
+      const groups = new Map();
+      for (const row of rows) {
+        if (!groups.has(row.posisi)) groups.set(row.posisi, []);
+        groups.get(row.posisi).push(row);
       }
+      return [...groups.entries()]
+        .sort((a, b) => positionSort(a[0], b[0]))
+        .map(([position, items]) => [position, [...items].sort((a, b) => a.panjang - b.panjang)]);
     }
 
-    doc.setTextColor(48, 45, 39);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(13);
-
-    doc.text("PROSENTASE STOCK IBS", titleX, 18);
-    doc.text("BERDASARKAN PANJANG KAYU", titleX, 25);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.text("Dicetak: " + jakartaTime(), 14, 38);
-
-    const positionLines = doc.splitTextToSize(
-      "Posisi: " + (selected || "Semua Posisi"),
-      182
-    );
-
-    doc.text(positionLines, 14, 44);
-
-    let y = 44 + positionLines.length * 4.5;
-
-    doc.text(
-      "Dasar persentase: " +
-      (byVolume ? "volume" : "jumlah batang") +
-      " pada masing-masing posisi.",
-      14,
-      y
-    );
-
-    y += 7;
-
-    doc.setFont("helvetica", "bold");
-    doc.text(
-      "Total: " + number(totalBatang) + " batang | " +
-      number(totalVolume, 4) + " m³",
-      14,
-      y
-    );
-
-    y += 10;
-
-    for (const [position, rows] of groupStock(filtered)) {
-      const batang = sum(rows, "batang");
-      const volume = sum(rows, "volume");
-      const missing = sum(rows, "kosong");
-      const denominator = byVolume ? volume : batang;
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-
-      const heading = doc.splitTextToSize(position, 182);
-      const headingHeight = heading.length * 5;
-
-      if (y + headingHeight + 25 > 277) {
-        doc.addPage();
-        y = 18;
-      }
-
-      doc.setTextColor(105, 80, 39);
-      doc.text(heading, 14, y);
-
-      y += headingHeight + 2;
-
-      doc.autoTable({
-        startY: y,
-        margin: {
-          top: 18,
-          right: 14,
-          bottom: 20,
-          left: 14
-        },
-        theme: "grid",
-        head: [[
-          "Panjang",
-          "Batang",
-          "Volume (m³)",
-          byVolume ? "% Volume" : "% Batang"
-        ]],
-        body: rows.map(row => {
-          const numerator = byVolume
-            ? row.volume
-            : row.batang;
-
-          const percent = denominator > 0
-            ? number(numerator / denominator * 100, 2) + "%"
-            : "-";
-
-          return [
-            row.panjang + "M",
-            number(row.batang),
-            number(row.volume, 4),
-            percent
-          ];
-        }),
-        foot: [[
-          "TOTAL",
-          number(batang),
-          number(volume, 4),
-          denominator > 0 ? "100,00%" : "-"
-        ]],
-        showFoot: "lastPage",
-        rowPageBreak: "avoid",
-        styles: {
-          font: "helvetica",
-          fontSize: 9,
-          cellPadding: 2.8,
-          textColor: [35, 35, 35],
-          lineColor: [215, 208, 194],
-          lineWidth: 0.15,
-          halign: "right"
-        },
-        columnStyles: {
-          0: {
-            halign: "left",
-            cellWidth: 38
-          }
-        },
-        headStyles: {
-          fillColor: [128, 99, 51],
-          textColor: [255, 255, 255],
-          fontStyle: "bold"
-        },
-        footStyles: {
-          fillColor: [238, 229, 211],
-          textColor: [35, 35, 35],
-          fontStyle: "bold"
-        },
-        alternateRowStyles: {
-          fillColor: [250, 247, 240]
+    function aggregateByLength(rows) {
+      const combined = new Map();
+      for (const row of rows) {
+        const key = String(row.panjang);
+        if (!combined.has(key)) {
+          combined.set(key, { panjang: row.panjang, batang: 0, volume: 0, kosong: 0 });
         }
+        const item = combined.get(key);
+        item.batang += row.batang;
+        item.volume += row.volume;
+        item.kosong += row.kosong;
+      }
+      return [...combined.values()].sort((a, b) => a.panjang - b.panjang);
+    }
+
+    function parseCSV(text) {
+      text = text.replace(/^\uFEFF/, "");
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let quoted = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const character = text[i];
+        if (character === "\"") {
+          if (quoted && text[i + 1] === "\"") { cell += "\""; i++; }
+          else quoted = !quoted;
+        } else if (character === "," && !quoted) {
+          row.push(cell); cell = "";
+        } else if ((character === "\n" || character === "\r") && !quoted) {
+          if (character === "\r" && text[i + 1] === "\n") i++;
+          row.push(cell);
+          if (row.some(value => value.trim() !== "")) rows.push(row);
+          row = []; cell = "";
+        } else cell += character;
+      }
+
+      if (quoted) throw new Error("Format kutipan CSV tidak lengkap.");
+      row.push(cell);
+      if (row.some(value => value.trim() !== "")) rows.push(row);
+      return rows;
+    }
+
+    function readStock(text) {
+      const rows = parseCSV(text);
+      if (!rows.length) throw new Error("CSV kosong.");
+      const headers = rows.shift().map(value => value.trim().toLowerCase());
+      const required = ["posisi", "panjang_m", "batang", "volume_m3", "volume_kosong"];
+      for (const column of required) {
+        if (!headers.includes(column)) throw new Error("Kolom CSV tidak ditemukan: " + column);
+      }
+
+      const records = rows.map((row, index) => {
+        const field = name => {
+          const column = headers.indexOf(name);
+          return column < 0 ? "" : (row[column] || "").trim();
+        };
+        const numeric = (name, allowBlank = false) => {
+          const raw = field(name);
+          if (!raw && !allowBlank) throw new Error(`Baris ${index + 2}: kolom ${name} kosong.`);
+          const value = raw ? Number(raw.replace(",", ".")) : 0;
+          if (!Number.isFinite(value) || value < 0) throw new Error(`Baris ${index + 2}: kolom ${name} tidak valid.`);
+          return value;
+        };
+        const result = {
+          posisi: field("posisi"), panjang: numeric("panjang_m"), batang: numeric("batang"),
+          volume: numeric("volume_m3", true), kosong: numeric("volume_kosong", true)
+        };
+        if (!result.posisi || result.panjang <= 0 || !Number.isInteger(result.batang) || !Number.isInteger(result.kosong) || result.kosong > result.batang) {
+          throw new Error(`Baris ${index + 2}: nilai rekap tidak valid.`);
+        }
+        return result;
       });
 
-      y = doc.lastAutoTable.finalY + 6;
+      if (!records.length) throw new Error("Belum ada baris rekap stock.");
+      return records;
+    }
 
-      if (missing) {
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
+    async function fetchText(url) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 30000);
+      try {
+        const response = await fetch(url + (url.includes("?") ? "&" : "?") + "t=" + Date.now(), {
+          cache: "no-store", signal: controller.signal
+        });
+        if (!response.ok) throw new Error("Server mengembalikan HTTP " + response.status);
+        return await response.text();
+      } finally { clearTimeout(timer); }
+    }
 
-        const note = doc.splitTextToSize(
-          "Catatan: " + number(missing) +
-          " batang belum memiliki volume. Persentase volume " +
-          "berdasarkan volume yang terisi.",
-          182
-        );
+    function cardHTML(title, rows, byVolume, isOverall = false) {
+      const totalBatang = sum(rows, "batang");
+      const totalVolume = sum(rows, "volume");
+      const missingVolume = sum(rows, "kosong");
+      const denominator = byVolume ? totalVolume : totalBatang;
+      const type = byVolume ? "Volume" : "Batang";
+      const body = rows.map(row => {
+        const numerator = byVolume ? row.volume : row.batang;
+        const percent = denominator > 0 ? numerator / denominator * 100 : null;
+        const width = percent === null ? 0 : Math.max(0, Math.min(100, percent));
+        return `<tr><td class="length">${escapeHTML(row.panjang + "M")}</td><td>${number(row.batang)}</td><td>${number(row.volume, 4)}</td><td><span class="percent">${percent === null ? "—" : number(percent, 2) + "%"}</span><div class="track" aria-hidden="true"><div class="fill" style="width:${width}%"></div></div></td></tr>`;
+      }).join("");
+      const warning = missingVolume ? `<p class="card-warning">${number(missingVolume)} batang belum memiliki volume. Persentase volume berdasarkan volume yang terisi.</p>` : "";
+      const overallNote = isOverall ? `<p class="overall-note">Akumulasi semua posisi: ${number(new Set(stock.map(row => row.posisi)).size)} posisi stock.</p>` : "";
+      return `<section class="card ${isOverall ? "overall-card" : ""}"><div class="card-header"><div class="card-title-line"><h3>${escapeHTML(title)}</h3><span class="badge">${rows.length} kelompok</span></div><p class="card-summary">${number(totalBatang)} batang · ${number(totalVolume, 4)} m³</p></div><table aria-label="Rekap panjang ${escapeHTML(title)}"><thead><tr><th scope="col">Panjang</th><th scope="col">Batang</th><th scope="col">Volume m³</th><th scope="col">% ${type}</th></tr></thead><tbody>${body}</tbody><tfoot><tr><td>Total</td><td>${number(totalBatang)}</td><td>${number(totalVolume, 4)}</td><td>${denominator > 0 ? "100,00%" : "—"}</td></tr></tfoot></table>${warning}${overallNote}</section>`;
+    }
 
-        const noteHeight = note.length * 4;
+    function render() {
+      const byVolume = $("basis").value === "volume";
+      const filtered = filteredStock();
+      const groups = groupStock(filtered);
+      $("totalBatang").textContent = number(sum(filtered, "batang"));
+      $("totalVolume").textContent = number(sum(filtered, "volume"), 4);
+      $("totalPosisi").textContent = number(groups.length);
+      $("totalPanjang").textContent = number(new Set(filtered.map(row => row.panjang)).size);
+      $("basisNote").textContent = "Persentase terhadap total " + (byVolume ? "volume" : "batang") + " setiap posisi";
+      $("downloadPDF").disabled = !stock.length;
 
-        if (y + noteHeight > 277) {
-          doc.addPage();
-          y = 18;
-        }
-
-        doc.setTextColor(80, 70, 50);
-        doc.text(note, 14, y);
-        y += noteHeight + 3;
+      if (!filtered.length) {
+        $("cards").innerHTML = '<div class="empty">Tidak ada data pada posisi ini.</div>';
+        return;
       }
 
-      y += 5;
+      const perPosition = groups.map(([position, rows]) => cardHTML(position, rows, byVolume)).join("");
+      const overall = cardHTML("KESELURUHAN POSISI", aggregateByLength(stock), byVolume, true);
+      $("cards").innerHTML = perPosition + overall;
     }
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-
-    const explanation = doc.splitTextToSize(
-      "Kelompok panjang dibulatkan turun setiap 0,5 meter. " +
-      "Contoh: 2,00-2,49 m menjadi 2M dan 2,50-2,99 m " +
-      "menjadi 2.5M. Pembulatan persentase dapat menyebabkan " +
-      "jumlah sedikit berbeda dari 100%.",
-      182
-    );
-
-    if (y + explanation.length * 4 > 277) {
-      doc.addPage();
-      y = 18;
+    async function loadStock() {
+      $("refresh").disabled = true;
+      $("cards").setAttribute("aria-busy", "true");
+      setStatus("Mengambil data terbaru…");
+      try {
+        const updated = readStock(await fetchText(CSV_URL));
+        const previousSelection = $("position").value;
+        stock = updated;
+        const positions = [...new Set(stock.map(row => row.posisi))].sort(positionSort);
+        $("position").replaceChildren(new Option("Semua Posisi", ""), ...positions.map(position => new Option(position, position)));
+        if (positions.includes(previousSelection)) $("position").value = previousSelection;
+        $("position").disabled = false;
+        render();
+        setStatus("Data berhasil dimuat · " + jakartaTime());
+      } catch (error) {
+        const reason = error.name === "AbortError" ? "Koneksi melewati batas waktu. Coba kembali." : error.message;
+        if (!stock.length) $("cards").innerHTML = '<div class="empty">Data belum dapat dimuat.<br>Tekan <strong>Perbarui Data</strong> untuk mencoba lagi.</div>';
+        setStatus("Gagal memperbarui data. " + reason + (stock.length ? " Tampilan sebelumnya tetap ditampilkan." : ""), true);
+      } finally {
+        $("refresh").disabled = false;
+        $("cards").setAttribute("aria-busy", "false");
+      }
     }
 
-    doc.setTextColor(80, 80, 80);
-    doc.text(explanation, 14, y);
-
-    const pages = doc.getNumberOfPages();
-
-    for (let page = 1; page <= pages; page++) {
-      doc.setPage(page);
-      doc.setDrawColor(220, 214, 202);
-      doc.line(14, 284, 196, 284);
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
-      doc.setTextColor(100, 100, 100);
-
-      doc.text(
-        "IBS | Rekap Panjang Stock Kayu",
-        14,
-        290
-      );
-
-      doc.text(
-        "Halaman " + page + " / " + pages,
-        196,
-        290,
-        { align: "right" }
-      );
+    async function downloadLoglist() {
+      const button = $("downloadLoglist");
+      button.disabled = true;
+      try {
+        const text = await fetchText(LOGLIST_URL);
+        const rows = parseCSV(text);
+        if (rows.length < 2 || rows[0].length < 2) throw new Error("File Loglist kosong atau formatnya tidak sesuai.");
+        const blob = new Blob(["\uFEFF", text.replace(/^\uFEFF/, "")], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const filename = "Loglist_" + timestamp() + ".csv";
+        link.href = url; link.download = filename;
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        setStatus("Unduhan Loglist dimulai: " + filename);
+      } catch (error) {
+        const reason = error.name === "AbortError" ? "Koneksi melewati batas waktu." : error.message;
+        setStatus("Gagal mengunduh Loglist. " + reason, true);
+      } finally { button.disabled = false; }
     }
 
-    const filename =
-      "Stock_panjang_ibs_" + timestamp() + ".pdf";
+    function writePdfHeader(doc, selected, byVolume) {
+      let titleX = 14;
+      const logo = $("logo");
+      if (!logo.hidden && logo.complete && logo.naturalWidth > 0) {
+        try {
+          const scale = Math.min(18 / logo.naturalWidth, 18 / logo.naturalHeight);
+          const width = logo.naturalWidth * scale;
+          const height = logo.naturalHeight * scale;
+          doc.addImage(logo, "PNG", 14 + (18 - width) / 2, 12 + (18 - height) / 2, width, height);
+          titleX = 37;
+        } catch (error) { console.warn("Logo PDF tidak dapat dimuat.", error); }
+      }
+      doc.setTextColor(48, 45, 39);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(13);
+      doc.text("PROSENTASE STOCK IBS", titleX, 18);
+      doc.text("BERDASARKAN PANJANG KAYU", titleX, 25);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9);
+      doc.text("Dicetak: " + jakartaTime(), 14, 38);
+      doc.text("Filter posisi: " + (selected || "Semua Posisi"), 14, 44);
+      doc.text("Dasar persentase: " + (byVolume ? "volume kayu" : "jumlah batang"), 14, 50);
+      return 60;
+    }
 
-    await doc.save(filename, { returnPromise: true });
-    setStatus("Unduhan PDF dimulai: " + filename);
-  } catch (error) {
-    setStatus("Gagal membuat PDF. " + error.message, true);
-  } finally {
-    button.disabled = !filteredStock().length;
-    button.removeAttribute("aria-busy");
-  }
-}
+    function addPdfTable(doc, y, title, rows, byVolume) {
+      const totalBatang = sum(rows, "batang");
+      const totalVolume = sum(rows, "volume");
+      const denominator = byVolume ? totalVolume : totalBatang;
+      if (y + 20 > 277) { doc.addPage(); y = 18; }
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(105, 80, 39);
+      doc.text(title, 14, y);
+      y += 3;
+      doc.autoTable({
+        startY: y,
+        margin: { top: 18, right: 14, bottom: 20, left: 14 },
+        theme: "grid",
+        head: [["Panjang", "Batang", "Volume (m³)", byVolume ? "% Volume" : "% Batang"]],
+        body: rows.map(row => {
+          const numerator = byVolume ? row.volume : row.batang;
+          const percent = denominator > 0 ? number(numerator / denominator * 100, 2) + "%" : "-";
+          return [row.panjang + "M", number(row.batang), number(row.volume, 4), percent];
+        }),
+        foot: [["TOTAL", number(totalBatang), number(totalVolume, 4), denominator > 0 ? "100,00%" : "-"]],
+        showFoot: "lastPage",
+        rowPageBreak: "avoid",
+        styles: { font: "helvetica", fontSize: 9, cellPadding: 2.8, textColor: [35, 35, 35], lineColor: [215, 208, 194], lineWidth: .15, halign: "right" },
+        columnStyles: { 0: { halign: "left", cellWidth: 38 } },
+        headStyles: { fillColor: [128, 99, 51], textColor: [255, 255, 255], fontStyle: "bold" },
+        footStyles: { fillColor: [238, 229, 211], textColor: [35, 35, 35], fontStyle: "bold" },
+        alternateRowStyles: { fillColor: [250, 247, 240] }
+      });
+      return doc.lastAutoTable.finalY + 8;
+    }
 
-// ================= EVENT =================
+    async function downloadPDF() {
+      const button = $("downloadPDF");
+      button.disabled = true;
+      try {
+        if (!window.jspdf || typeof window.jspdf.jsPDF !== "function") throw new Error("Komponen PDF belum termuat. Muat ulang halaman.");
+        const doc = new window.jspdf.jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+        if (typeof doc.autoTable !== "function") throw new Error("Komponen tabel PDF belum termuat.");
+        const selected = $("position").value;
+        const byVolume = $("basis").value === "volume";
+        const filtered = filteredStock();
+        if (!filtered.length) throw new Error("Belum ada data untuk diunduh.");
 
-$("refresh").addEventListener("click", loadStock);
-$("download").addEventListener("click", downloadLoglist);
-$("downloadPDF").addEventListener("click", downloadPDF);
-$("position").addEventListener("change", render);
-$("basis").addEventListener("change", render);
+        let y = writePdfHeader(doc, selected, byVolume);
+        for (const [position, rows] of groupStock(filtered)) y = addPdfTable(doc, y, position, rows, byVolume);
+        y = addPdfTable(doc, y, "KESELURUHAN POSISI", aggregateByLength(stock), byVolume);
 
-loadStock();
-</script>
+        const pages = doc.getNumberOfPages();
+        for (let page = 1; page <= pages; page++) {
+          doc.setPage(page);
+          doc.setDrawColor(220, 214, 202); doc.line(14, 284, 196, 284);
+          doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(100, 100, 100);
+          doc.text("IBS | Rekap Panjang Stock Kayu", 14, 290);
+          doc.text("Halaman " + page + " / " + pages, 196, 290, { align: "right" });
+        }
+        const filename = "Stock_panjang_ibs_" + timestamp() + ".pdf";
+        await doc.save(filename, { returnPromise: true });
+        setStatus("Unduhan PDF dimulai: " + filename);
+      } catch (error) {
+        setStatus("Gagal membuat PDF. " + error.message, true);
+      } finally { button.disabled = !stock.length; }
+    }
+
+    $("refresh").addEventListener("click", loadStock);
+    $("position").addEventListener("change", render);
+    $("basis").addEventListener("change", render);
+    $("downloadLoglist").addEventListener("click", downloadLoglist);
+    $("downloadPDF").addEventListener("click", downloadPDF);
+    loadStock();
+  </script>
 </body>
 </html>
