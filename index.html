@@ -461,7 +461,7 @@
       <div>
         <p class="eyebrow">MONITORING PERSEDIAAN KAYU</p>
         <h1>PROSENTASE STOCK IBS BERDASARKAN PANJANG KAYU</h1>
-        <p class="subtitle">Distribusi panjang kayu pada setiap posisi stock</p>
+        <p class="subtitle">Distribusi keseluruhan stock kayu berdasarkan panjang</p>
       </div>
     </div>
   </header>
@@ -469,12 +469,6 @@
   <main class="wrap">
     <div class="toolbar">
       <div class="filters">
-        <div class="field">
-          <label for="position">POSISI STOCK</label>
-          <select id="position" disabled>
-            <option value="">Semua Posisi</option>
-          </select>
-        </div>
         <div class="field">
           <label for="basis">DASAR PERSENTASE</label>
           <select id="basis">
@@ -510,8 +504,8 @@
     </div>
 
     <div class="section-heading">
-      <h2>Rekap Panjang per Posisi</h2>
-      <span id="basisNote" class="basis-note">Persentase terhadap total volume setiap posisi</span>
+      <h2>Rekap Keseluruhan Posisi</h2>
+      <span id="basisNote" class="basis-note">Persentase terhadap total volume keseluruhan</span>
     </div>
 
     <div id="cards" class="cards" aria-busy="true">
@@ -520,7 +514,7 @@
 
     <div class="explanation">
       <p><strong>Kelompok panjang:</strong> 2,00–2,49 m menjadi 2M; 2,50–2,99 m menjadi 2.5M; dan seterusnya.</p>
-      <p>Kartu <strong>KESELURUHAN POSISI</strong> di bagian paling bawah menggabungkan semua posisi stock. Kartu ini selalu memakai seluruh data, meskipun posisi tertentu sedang dipilih pada filter di atas.</p>
+      <p>Rekap ini menggabungkan seluruh posisi stock dalam satu kartu.</p>
       <p>Batang dengan volume kosong tetap dihitung dalam jumlah batang. Persentase volume memakai volume yang sudah terisi.</p>
     </div>
     <noscript><p>Aktifkan JavaScript agar data dan tombol unduhan dapat digunakan.</p></noscript>
@@ -563,29 +557,6 @@
       return new Intl.DateTimeFormat("id-ID", {
         dateStyle: "medium", timeStyle: "medium", timeZone: "Asia/Pontianak"
       }).format(new Date()) + " WIB";
-    }
-
-    function positionSort(a, b) {
-      if (a === b) return 0;
-      if (a.toUpperCase() === "BLOK") return -1;
-      if (b.toUpperCase() === "BLOK") return 1;
-      return a.localeCompare(b, "id", { numeric: true });
-    }
-
-    function filteredStock() {
-      const selected = $("position").value;
-      return stock.filter(row => !selected || row.posisi === selected);
-    }
-
-    function groupStock(rows) {
-      const groups = new Map();
-      for (const row of rows) {
-        if (!groups.has(row.posisi)) groups.set(row.posisi, []);
-        groups.get(row.posisi).push(row);
-      }
-      return [...groups.entries()]
-        .sort((a, b) => positionSort(a[0], b[0]))
-        .map(([position, items]) => [position, [...items].sort((a, b) => a.panjang - b.panjang)]);
     }
 
     function aggregateByLength(rows) {
@@ -697,23 +668,20 @@
 
     function render() {
       const byVolume = $("basis").value === "volume";
-      const filtered = filteredStock();
-      const groups = groupStock(filtered);
-      $("totalBatang").textContent = number(sum(filtered, "batang"));
-      $("totalVolume").textContent = number(sum(filtered, "volume"), 4);
-      $("totalPosisi").textContent = number(groups.length);
-      $("totalPanjang").textContent = number(new Set(filtered.map(row => row.panjang)).size);
-      $("basisNote").textContent = "Persentase terhadap total " + (byVolume ? "volume" : "batang") + " setiap posisi";
+      const keseluruhan = aggregateByLength(stock);
+      $("totalBatang").textContent = number(sum(stock, "batang"));
+      $("totalVolume").textContent = number(sum(stock, "volume"), 4);
+      $("totalPosisi").textContent = number(new Set(stock.map(row => row.posisi)).size);
+      $("totalPanjang").textContent = number(keseluruhan.length);
+      $("basisNote").textContent = "Persentase terhadap total " + (byVolume ? "volume" : "batang") + " keseluruhan";
       $("downloadPDF").disabled = !stock.length;
 
-      if (!filtered.length) {
-        $("cards").innerHTML = '<div class="empty">Tidak ada data pada posisi ini.</div>';
+      if (!stock.length) {
+        $("cards").innerHTML = '<div class="empty">Tidak ada data stock.</div>';
         return;
       }
 
-      const perPosition = groups.map(([position, rows]) => cardHTML(position, rows, byVolume)).join("");
-      const overall = cardHTML("KESELURUHAN POSISI", aggregateByLength(stock), byVolume, true);
-      $("cards").innerHTML = perPosition + overall;
+      $("cards").innerHTML = cardHTML("KESELURUHAN POSISI", keseluruhan, byVolume, true);
     }
 
     async function loadStock() {
@@ -722,12 +690,7 @@
       setStatus("Mengambil data terbaru…");
       try {
         const updated = readStock(await fetchText(CSV_URL));
-        const previousSelection = $("position").value;
         stock = updated;
-        const positions = [...new Set(stock.map(row => row.posisi))].sort(positionSort);
-        $("position").replaceChildren(new Option("Semua Posisi", ""), ...positions.map(position => new Option(position, position)));
-        if (positions.includes(previousSelection)) $("position").value = previousSelection;
-        $("position").disabled = false;
         render();
         setStatus("Data berhasil dimuat · " + jakartaTime());
       } catch (error) {
@@ -761,7 +724,7 @@
       } finally { button.disabled = false; }
     }
 
-    function writePdfHeader(doc, selected, byVolume) {
+    function writePdfHeader(doc, byVolume) {
       let titleX = 14;
       const logo = $("logo");
       if (!logo.hidden && logo.complete && logo.naturalWidth > 0) {
@@ -779,7 +742,7 @@
       doc.text("BERDASARKAN PANJANG KAYU", titleX, 25);
       doc.setFont("helvetica", "normal"); doc.setFontSize(9);
       doc.text("Dicetak: " + jakartaTime(), 14, 38);
-      doc.text("Filter posisi: " + (selected || "Semua Posisi"), 14, 44);
+      doc.text("Cakupan: seluruh posisi stock", 14, 44);
       doc.text("Dasar persentase: " + (byVolume ? "volume kayu" : "jumlah batang"), 14, 50);
       return 60;
     }
@@ -821,13 +784,10 @@
         if (!window.jspdf || typeof window.jspdf.jsPDF !== "function") throw new Error("Komponen PDF belum termuat. Muat ulang halaman.");
         const doc = new window.jspdf.jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
         if (typeof doc.autoTable !== "function") throw new Error("Komponen tabel PDF belum termuat.");
-        const selected = $("position").value;
         const byVolume = $("basis").value === "volume";
-        const filtered = filteredStock();
-        if (!filtered.length) throw new Error("Belum ada data untuk diunduh.");
+        if (!stock.length) throw new Error("Belum ada data untuk diunduh.");
 
-        let y = writePdfHeader(doc, selected, byVolume);
-        for (const [position, rows] of groupStock(filtered)) y = addPdfTable(doc, y, position, rows, byVolume);
+        let y = writePdfHeader(doc, byVolume);
         y = addPdfTable(doc, y, "KESELURUHAN POSISI", aggregateByLength(stock), byVolume);
 
         const pages = doc.getNumberOfPages();
@@ -847,7 +807,6 @@
     }
 
     $("refresh").addEventListener("click", loadStock);
-    $("position").addEventListener("change", render);
     $("basis").addEventListener("change", render);
     $("downloadLoglist").addEventListener("click", downloadLoglist);
     $("downloadPDF").addEventListener("click", downloadPDF);
